@@ -1,16 +1,17 @@
 #include "Product.h"
 
-struct Element {
-  Element *next;
+struct Element2 {
+  Element2 *prev;
+  Element2 *next;
   Product data;
 };
 
-struct Element2 : Element {
-  Element2 *prev;
+struct Element {
+  Element *next;
+  Element2 *data;
 };
 
 class LinkedList {
-public:
-  virtual void add(Product Data) = 0;
-  virtual void display() = 0;
+protected:
+  int size;
 };

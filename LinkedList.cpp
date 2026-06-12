@@ -13,7 +13,9 @@ public:
     size = 0;
   }
 
-  void add(Product data) override {
+  Element *getHead() { return head; }
+
+  void add(Element2 *data) {
     Element *node = new Element;
     node->data = data;
     node->next = nullptr;
@@ -52,7 +54,7 @@ public:
     return max;
   }
 
-  void add(Product data) override {
+  Element2 *add(Product data) {
     Element2 *node = new Element2;
     node->data = data;
     node->next = nullptr;
@@ -66,6 +68,7 @@ public:
     }
     tail = node;
     size++;
+    return node; // return pointer to the new node
   }
 
   void remove(std::string id) {

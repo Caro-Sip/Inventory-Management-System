@@ -1,4 +1,6 @@
-#include "LinkedList.cpp"
+#pragma once
+
+#include "LinkedList.h"
 
 class HashTable {
 private:
@@ -17,15 +19,21 @@ public:
     delete[] this->table;
   }
 
-  void init(int size) {
-    this->tableSize = size;
+  void insert(Element2 *node) { this->table[hash(node->data.id)]->add(node); }
+
+  void init(DoublyLinkedList &ls) {
+    this->tableSize = ls.getSize();
     this->table = new SinglyLinkedList *[this->tableSize];
     for (int i = 0; i < this->tableSize; i++) {
       this->table[i] = new SinglyLinkedList;
     }
-  }
 
-  void insert(Element2 *node) { this->table[hash(node->data.id)]->add(node); }
+    Element2 *node = ls.getHead();
+    while (node != nullptr) {
+      this->insert(node);
+      node = node->next;
+    }
+  }
 
   Element2 *search(int id) {
     if (id < 0 || id >= this->tableSize)

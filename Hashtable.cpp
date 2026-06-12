@@ -1,34 +1,19 @@
-#include "LinkedList.cpp"
-
-int nextPrime(int n) {
-  while (true) {
-    bool isPrime = true;
-    for (int i = 2; i * i <= n; i++) {
-      if (n % i == 0) {
-        isPrime = false;
-        break;
-      }
-    }
-    if (isPrime)
-      return n;
-    n++;
-  }
-}
+#include "LinkedList.h"
 
 class HashTable {
 private:
-  Element2 **table;
   int tableSize;
+  Element2 **table;
 
   int hash(int id) { return id % this->tableSize; }
 
 public:
-  HashTable() : table(nullptr), tableSize(0) {}
+  HashTable() : tableSize(0), table(nullptr) {}
 
   ~HashTable() { delete[] this->table; }
 
-  void init(int maxID) {
-    this->tableSize = nextPrime(maxID + 1);
+  void init(int size) {
+    this->tableSize = size;
     this->table = new Element2 *[this->tableSize];
     for (int i = 0; i < this->tableSize; i++) {
       this->table[i] = nullptr;
@@ -38,9 +23,8 @@ public:
   void insert(Element2 *node) { this->table[hash(node->data.id)] = node; }
 
   Element2 *search(int id) {
-    if (id < 0 || id >= this->tableSize) {
+    if (id < 0 || id >= this->tableSize)
       return nullptr;
-    }
     return this->table[hash(id)];
   }
 };

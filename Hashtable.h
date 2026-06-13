@@ -1,4 +1,6 @@
-#pragma once
+
+#ifndef HASHTABLE_H
+#define HASHTABLE_H
 
 
 #include <vector>
@@ -16,7 +18,6 @@ class HashTable{
       this->id = id;
       this->value = v;
       this->next =nullptr;
-
     }
   };
   const int BucketCount = 100;
@@ -36,4 +37,4 @@ class HashTable{
     void remove(int id);
     void display();
 };
-
+#endif

@@ -3,7 +3,7 @@
 #include "Hashtable.h"
 
 HashTable::HashTable() : table(BucketCount, nullptr) {}
-// Distructor 
+
 HashTable::~HashTable() {
     for (int i = 0; i < BucketCount; ++i) {
         HashNode* current = table[i];
@@ -14,6 +14,7 @@ HashTable::~HashTable() {
         }
     }
 }
+
 int HashTable::hash(int id) const {
     return (id < 0) ? (-id % BucketCount) : (id % BucketCount);
 }
@@ -27,13 +28,19 @@ void HashTable::insert(int id,Element2* node){
         newNode->next = table[index];
         table[index] = newNode;
 }
+}
 void HashTable::display() {
-    for (int i = 0; i < BUCKET; i++) {
-        cout << i;
-        for (int x : table[i]) {
-            cout << " --> " << x;
+    for (int i = 0; i < BucketCount; i++) {
+        std::cout << i;
+
+        HashNode* current = table[i];
+
+        while (current != nullptr) {
+            std::cout << " --> " << current->id;
+            current = current->next;
         }
-        cout << endl;
+
+        std::cout << std::endl;
     }
 }
-}
+

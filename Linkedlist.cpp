@@ -13,7 +13,6 @@ DoublyLinkedList::~DoublyLinkedList(){
 }
 DoublyLinkedList::Element2* DoublyLinkedList::getHead() const { return head; }
 
-
 int DoublyLinkedList::getSize() const { return size; }
 // make sure there no collision with the id
 int DoublyLinkedList::getMaxID() const {
@@ -26,5 +25,21 @@ int DoublyLinkedList::getMaxID() const {
         node = node->next; 
     }
     return max;
+}
+
+DoublyLinkedList::Element2*::DoublyLinkedList::add(const Product& data) {
+    Element2* node = new Element2(data);
+    node-> next = nullptr;
+
+    if (head == nullptr) {
+        head = node;
+        tail = node;
+    } else {
+        tail->next = node;
+        node->prev = tail;
+        tail = node;
+    }
+    size++;
+    return node;
 }
 

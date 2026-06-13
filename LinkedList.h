@@ -96,12 +96,13 @@ public:
     // waiting
   }
 
-  void display() {
-    Element2 *node = head;
-    while (node != nullptr) {
-      std::cout << node->data.id << " | " << node->data.name << " | "
-                << node->data.quantity << " | " << node->data.price << "\n";
-      node = node->next;
-    }
-  }
+  // no need anymore cuz we are using vectors to display instead of this
+  // void display() {
+  //   Element2 *node = head;
+  //   while (node != nullptr) {
+  //     std::cout << node->data.id << " | " << node->data.name << " | "
+  //               << node->data.quantity << " | " << node->data.price << "\n";
+  //     node = node->next;
+  //   }
+  // }
 };

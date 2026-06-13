@@ -1,3 +1,5 @@
+#pragma once
+
 #include "LinkedList.h"
 #include <fstream>
 #include <sstream>

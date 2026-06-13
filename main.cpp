@@ -1,4 +1,5 @@
 #include "init.cpp"
+#include "mergeSort.cpp"
 #include <iostream>
 #include <string>
 
@@ -60,15 +61,39 @@ private:
   }
 
   void handleViewListMenu() {
-    std::cout << "\n=== View List ===\n";
-    handleViewList();
-    std::cout << "\nPress Enter to return to main menu...";
-    std::string input;
-    std::getline(std::cin, input);
-    currentState = MenuState::Main;
-  }
+    int choice;
+    std::cout << "\n=== View By ===\n";
+    std::cout << "1. id\n";
+    std::cout << "2. name\n";
+    std::cout << "3. price\n";
+    std::cout << "4. quantity\n";
+    std::cout << "0. back\n";
+    std::cout << "choice: ";
 
-  void handleViewList() { ls->display(); }
+    std::cin >> choice;
+
+    switch (choice) {
+    case 1:
+      mergeSort(vector_ls.getVector(), byId);
+      break;
+    case 2:
+      mergeSort(vector_ls.getVector(), byName);
+      break;
+    case 3:
+      mergeSort(vector_ls.getVector(), byPrice);
+      break;
+    case 4:
+      mergeSort(vector_ls.getVector(), byQuantity);
+      break;
+    case 0:
+      currentState = MenuState::Main;
+      break;
+    default:
+      std::cout << "READ!\n";
+    }
+
+    vector_ls.display();
+  }
 
   void handleAddItem() { std::cout << "Unimplemented Method 2\n"; }
 

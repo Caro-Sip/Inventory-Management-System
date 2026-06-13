@@ -68,7 +68,9 @@ private:
     currentState = MenuState::Main;
   }
 
-  void handleViewList() { ls->display(); }
+  void handleViewList() {
+    std::cout << "Unimplemented Method 1\n";
+  }
 
   void handleAddItem() { std::cout << "Unimplemented Method 2\n"; }
 

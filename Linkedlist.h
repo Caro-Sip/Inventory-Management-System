@@ -21,10 +21,11 @@ private:
 
 public:
     DoublyLinkedList();
-
+    //abstract void function()
+    // virtual void function() = 0; // pure virtual function, making the class abstract
     DoublyLinkedList(const DoublyLinkedList&) = delete;
     DoublyLinkedList& operator=(const DoublyLinkedList&) = delete;
- 
+    Element2* merge(Element2* left, Element2* right, bool (*compare)(const Product&, const Product&));
     ~DoublyLinkedList();
 
     Element2* getHead() const;
@@ -34,8 +35,7 @@ public:
     Element2* add(const Product& data);
     void removeNode(Element2* nodelyL);
     void display() const;
-    void sort();
-    
+    void merge();
 };
 
 // class SinglyLinkedList {

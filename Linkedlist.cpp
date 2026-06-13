@@ -13,8 +13,9 @@ DoublyLinkedList::~DoublyLinkedList(){
 }
 DoublyLinkedList::Element2* DoublyLinkedList::getHead() const { return head; }
 
+
 int DoublyLinkedList::getSize() const { return size; }
-// make sure there no collision with the id
+
 int DoublyLinkedList::getMaxID() const {
     int max = 0;
     Element2* node = head;
@@ -42,4 +43,3 @@ DoublyLinkedList::Element2*::DoublyLinkedList::add(const Product& data) {
     size++;
     return node;
 }
-

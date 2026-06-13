@@ -32,7 +32,7 @@ void HashTable::insert(int id,Element2* node){
 void HashTable::display() {
     for (int i = 0; i < BucketCount; i++) {
         std::cout << i;
-
+        
         HashNode* current = table[i];
         
         while (current != nullptr) {

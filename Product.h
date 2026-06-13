@@ -1,3 +1,5 @@
+#ifndef  PRODUCT_H
+#define PRODUCT_H
 #include <string>
 
 struct Product {
@@ -5,4 +7,6 @@ struct Product {
   std::string name;
   int quantity;
   double price;
+
 };
+#endif

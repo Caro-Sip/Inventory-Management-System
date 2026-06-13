@@ -5,12 +5,10 @@
 
 class DoublyLinkedList {
 public:
-
     struct Element2 {
         Element2* prev;
         Element2* next;
         Product data;
-        
         Element2(const Product& p) : prev(nullptr), next(nullptr), data(p) {}
     };
 
@@ -21,46 +19,22 @@ private:
 
 public:
     DoublyLinkedList();
-    //abstract void function()
-    // virtual void function() = 0; // pure virtual function, making the class abstract
     DoublyLinkedList(const DoublyLinkedList&) = delete;
     DoublyLinkedList& operator=(const DoublyLinkedList&) = delete;
-    Element2* merge(Element2* left, Element2* right, bool (*compare)(const Product&, const Product&));
     ~DoublyLinkedList();
 
     Element2* getHead() const;
+    void setHead(Element2* node);
     int getSize() const;
     int getMaxID() const;
 
+    Element2* split(Element2* head);
+    Element2* merge(Element2* left, Element2* right, bool (*compare)(const Product&, const Product&));
+    Element2* mergeSort(Element2* head, bool (*compare)(const Product&, const Product&));
+
     Element2* add(const Product& data);
-    void removeNode(Element2* nodelyL);
+    void removeNode(Element2* node);
     void display() const;
-    void merge();
 };
-
-// class SinglyLinkedList {
-// private:
-//     struct Element {
-//         Element* next;
-//         Product data; 
-        
-//         Element(const Product& p) : next(nullptr), data(p) {}
-//     };
-
-//     Element* head;
-//     Element* tail;
-//     int size;
-
-// public:
-//     SinglyLinkedList();
-    
-//     SinglyLinkedList(const SinglyLinkedList&) = delete;
-//     SinglyLinkedList& operator=(const SinglyLinkedList&) = delete;
-    
-//     ~SinglyLinkedList();
-
-//     Element* getHead() const;
-//     void add(const Product& data);
-// };
 
 #endif

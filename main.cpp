@@ -1,6 +1,10 @@
-#include "init.cpp"
+#include "Linkedlist.h"
+#include "file_io.cpp"
+#include "mergesort.cpp"
 #include <iostream>
 #include <string>
+
+DoublyLinkedList *ls = new DoublyLinkedList;
 
 class IMS {
   enum class MenuState {
@@ -61,16 +65,34 @@ private:
 
   void handleViewListMenu() {
     std::cout << "\n=== View List ===\n";
-    handleViewList();
-    std::cout << "\nPress Enter to return to main menu...";
+    std::cout << "1.id\n";
+    std::cout << "2.name\n";
+    std::cout << "3.quantity\n";
+    std::cout << "4.price\n";
+    std::cout << "0.back\n";
+    std::cout << "Enter option: ";
+
     std::string input;
     std::getline(std::cin, input);
-    currentState = MenuState::Main;
+
+    if (input == "1") {
+      ls->setHead(ls->mergeSort(ls->getHead(), byId));
+    } else if (input == "2") {
+      ls->setHead(ls->mergeSort(ls->getHead(), byName));
+    } else if (input == "3") {
+      ls->setHead(ls->mergeSort(ls->getHead(), byQuantity));
+    } else if (input == "4") {
+      ls->setHead(ls->mergeSort(ls->getHead(), byPrice));
+    } else if (input == "0") {
+      currentState = MenuState::Main;
+      return;
+    } else {
+      std::cout << "Invalid Option. Please try again.\n";
+      return;
+    }
+    ls->display();
   }
 
-  void handleViewList() {
-    std::cout << "Unimplemented Method 1\n";
-  }
 
   void handleAddItem() { std::cout << "Unimplemented Method 2\n"; }
 
@@ -81,8 +103,12 @@ private:
   void handleRestockItem() { std::cout << "Unimplemented Method 5\n"; }
 };
 
+
+
 int main() {
+  loadFromCSV(*ls);
   IMS ims;
   ims.start();
+  saveToCSV(*ls);
   return 0;
 }

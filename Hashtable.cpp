@@ -34,12 +34,11 @@ void HashTable::display() {
         std::cout << i;
 
         HashNode* current = table[i];
-
+        
         while (current != nullptr) {
             std::cout << " --> " << current->id;
             current = current->next;
         }
-
         std::cout << std::endl;
     }
 }

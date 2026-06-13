@@ -80,7 +80,6 @@ private:
 };
 
 int main() {
-  init();
   IMS ims;
   ims.start();
   return 0;

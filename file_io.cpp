@@ -1,45 +1,45 @@
-#include "Linkedlist.h"
-#include <fstream>
-#include <sstream>
+// #include "Linkedlist.h"
+// #include <fstream>
+// #include <sstream>
 
-void loadFromCSV(DoublyLinkedList &ls) {
-  std::ifstream file("Product.csv");
-  std::string line;
+// void loadFromCSV(DoublyLinkedList &ls) {
+//   std::ifstream file("Product.csv");
+//   std::string line;
 
-  getline(file, line);
+//   getline(file, line);
 
-  while (getline(file, line)) {
-    std::stringstream read(line);
-    std::string id, name, quantity, price;
+//   while (getline(file, line)) {
+//     std::stringstream read(line);
+//     std::string id, name, quantity, price;
 
-    getline(read, id, ',');
-    getline(read, name, ',');
-    getline(read, quantity, ',');
-    getline(read, price, ',');
+//     getline(read, id, ',');
+//     getline(read, name, ',');
+//     getline(read, quantity, ',');
+//     getline(read, price, ',');
 
-    Product data;
-    data.id = stoi(id);
-    data.name = name;
-    data.quantity = stoi(quantity);
-    data.price = stod(price);
+//     Product data;
+//     data.id = stoi(id);
+//     data.name = name;
+//     data.quantity = stoi(quantity);
+//     data.price = stod(price);
 
-    ls.add(data);
-  }
+//     ls.add(data);
+//   }
 
-  file.close();
-}
+//   file.close();
+// }
 
-void saveToCSV(DoublyLinkedList &ls) {
-  std::ofstream file("Product.csv", std::ios::trunc);
+// void saveToCSV(DoublyLinkedList &ls) {
+//   std::ofstream file("Product.csv", std::ios::trunc);
 
-  file << "id,name,quantity,price\n";
+//   file << "id,name,quantity,price\n";
 
-  Element2 *node = ls.getHead();
-  while (node != nullptr) {
-    file << node->data.id << "," << node->data.name << ","
-         << node->data.quantity << "," << node->data.price << "\n";
-    node = node->next;
-  }
+//   Element2 *node = ls.getHead();
+//   while (node != nullptr) {
+//     file << node->data.id << "," << node->data.name << ","
+//          << node->data.quantity << "," << node->data.price << "\n";
+//     node = node->next;
+//   }
 
-  file.close();
-}
+//   file.close();
+// }

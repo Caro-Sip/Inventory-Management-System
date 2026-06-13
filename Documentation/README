@@ -10,3 +10,25 @@ Changes i did (BY MAESTRO)
 - what i change is instead of storing it in multiple linked list like last time (not sure why the singly linked list is trying to do the hashtable job) i make it so the hashtable store the pointer to each node 
 - i use vector here becuase gfg says so and it good for memeory alocation 
 
+
++ AI
+
+```
+int DoublyLinkedList::getMaxID() const {
+    int max = 0;
+    Element2* node = head;
+    while (node != nullptr) {
+        if (node->data.id > max) {
+            max = node->data.id;
+        }
+        node = node->next; 
+    }
+    return max;
+}
+
+```
+#### `Explaination`
+```
+i kinda aied this method it is for preventing collision by id when assigning automatic id
+so what it does really is like assing id that is like 101 102 and so on and not manually i guess idk i just wanna try sth cool
+```

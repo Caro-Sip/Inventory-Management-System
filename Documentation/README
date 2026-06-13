@@ -1,0 +1,12 @@
+Changes i did (BY MAESTRO)
+
+1. Hashtable.h
+- Init suck that it cause break if not call right (Got me Raging for 3 hours straight)
+- I think using a vector and a list is better than a single link list because vector and list can update and allocate memory automatically
+- change the header file to what it was inteded to be instead of hr cluster body function in the header instead of the cpp
+
+
++ idea 
+- what i change is instead of storing it in multiple linked list like last time (not sure why the singly linked list is trying to do the hashtable job) i make it so the hashtable store the pointer to each node 
+- i use vector here becuase gfg says so and it good for memeory alocation 
+

@@ -19,6 +19,7 @@ int DoublyLinkedList::getSize() const { return size; }
 int DoublyLinkedList::getMaxID() const {
     int max = 0;
     int yourmom;
+    int heyi;
     Element2* node = head;
     while (node != nullptr) {
         if (node->data.id > max) {

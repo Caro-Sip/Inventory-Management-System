@@ -2,39 +2,36 @@
 #ifndef HASHTABLE_H
 #define HASHTABLE_H
 
-
-#include <vector>
+#include "Linkedlist.h"
 #include <utility>
+#include <vector>
 
-struct Element2;
-
-class HashTable{
-  private:
-  struct HashNode{
+class HashTable {
+private:
+  struct HashNode {
     int id;
-    Element2 *value;
+    DoublyLinkedList::Element2 *data;
     HashNode *next;
-    HashNode(int id, Element2* v){
+    HashNode(int id, DoublyLinkedList::Element2 *data) {
       this->id = id;
-      this->value = v;
-      this->next =nullptr;
+      this->data = data;
+      this->next = nullptr;
     }
   };
   const int BucketCount = 100;
-  std::vector<HashNode*> table;
+  std::vector<HashNode *> table;
   int hash(int id) const;
- public:
+
+public:
   HashTable();
 
-    HashTable(const HashTable&) = delete;
-    HashTable& operator=(const HashTable&) = delete;
+  HashTable(const HashTable &) = delete;
+  HashTable &operator=(const HashTable &) = delete;
 
+  ~HashTable();
 
-    ~HashTable();
-
-    void insert(int id, Element2* node);
-    Element2* search(int id);
-    void remove(int id);
-    void display();
+  void insert(int id, DoublyLinkedList::Element2 *data);
+  DoublyLinkedList::Element2 *search(int id);
+  void load(DoublyLinkedList *ls);
 };
 #endif

@@ -1,10 +1,13 @@
-#include "Linkedlist.h"
+#include "Hashtable.cpp"
+#include "Linkedlist.cpp"
 #include "file_io.cpp"
 #include "mergesort.cpp"
+#include <iomanip>
 #include <iostream>
 #include <string>
 
 DoublyLinkedList *ls = new DoublyLinkedList;
+HashTable *table = new HashTable;
 
 class IMS {
   enum class MenuState {
@@ -93,20 +96,52 @@ private:
     ls->display();
   }
 
-
   void handleAddItem() { std::cout << "Unimplemented Method 2\n"; }
 
-  void handleUpdateItem() { std::cout << "Unimplemented Method 3\n"; }
+  void handleUpdateItem() {
+    std::cout << "\n=== update ===\n";
+    std::cout << "id to update: ";
+    int id;
+
+    std::cin >> id;
+    std::cin.ignore(10000, '\n');
+
+    DoublyLinkedList::Element2 *node = table->search(id);
+
+    if (node) {
+    std::cout << "\n=== found ===\n";
+    std::cout << std::left << std::setw(10) << node->data.id << std::setw(20)
+              << node->data.name << std::setw(12) << node->data.quantity
+              << std::setw(10) << node->data.price << "\n\n";
+
+    std::string input;
+
+    std::cout << "New name (" << node->data.name << "): ";
+    std::getline(std::cin, input);
+    if (!input.empty()) node->data.name = input;
+
+    std::cout << "New quantity (" << node->data.quantity << "): ";
+    std::getline(std::cin, input);
+    if (!input.empty()) node->data.quantity = std::stoi(input);
+
+    std::cout << "New price (" << node->data.price << "): ";
+    std::getline(std::cin, input);
+    if (!input.empty()) node->data.price = std::stod(input);
+
+    std::cout << "Updated successfully.\n";
+    } else {
+        std::cout << "Not found.\n";
+    }
+  }
 
   void handleRemoveItem() { std::cout << "Unimplemented Method 4\n"; }
 
   void handleRestockItem() { std::cout << "Unimplemented Method 5\n"; }
 };
 
-
-
 int main() {
   loadFromCSV(*ls);
+  table->load(ls);
   IMS ims;
   ims.start();
   saveToCSV(*ls);

@@ -43,16 +43,29 @@ DoublyLinkedList::Element2 *HashTable::search(int id) {
   return nullptr;
 }
 
-void HashTable::load(DoublyLinkedList *ls) {
-    DoublyLinkedList::Element2 *node = ls->getHead();
-  while (node != nullptr){
-        insert(node->data.id, node);
-        node = node->next;
+void HashTable::remove(int id) {
+  int index = hash(id);
+  HashNode *current = table[index];
+  HashNode *prev = nullptr;
+  while (current != nullptr) {
+    if (current->id == id) {
+      if (prev == nullptr) {
+        table[index] = current->next;
+      } else {
+        prev->next = current->next;
+      }
+      delete current;
+      return;
     }
+    prev = current;
+    current = current->next;
+  }
+}
 
-    // if (!found) {
-    //   HashNode *newNode = new HashNode(node->data.id, node);
-    //   newNode->next = table[index];
-    //   table[index] = newNode;
-    // }
+void HashTable::load(DoublyLinkedList *ls) {
+  DoublyLinkedList::Element2 *node = ls->getHead();
+  while (node != nullptr) {
+    insert(node->data.id, node);
+    node = node->next;
+  }
 }

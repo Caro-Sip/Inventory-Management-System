@@ -59,3 +59,22 @@ void DoublyLinkedList::display() const {
     current = current->next;
   }
 }
+
+void DoublyLinkedList::removeNode(Element2* node) {
+  if (node == nullptr) return;
+
+  if (node->prev != nullptr) {
+    node->prev->next = node->next;
+  } else {
+    head = node->next;
+  }
+
+  if (node->next != nullptr) {
+    node->next->prev = node->prev;
+  } else {
+    tail = node->prev;
+  }
+
+  delete node;
+  size--;
+}

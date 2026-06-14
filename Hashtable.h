@@ -32,6 +32,7 @@ public:
 
   void insert(int id, DoublyLinkedList::Element2 *data);
   DoublyLinkedList::Element2 *search(int id);
+  void remove(int id);
   void load(DoublyLinkedList *ls);
 };
 #endif

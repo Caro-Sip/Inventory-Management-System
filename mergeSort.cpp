@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Product.h"
-#include <vector>
-using namespace std;
+#include "vector.h"
 
 bool byId(Product a, Product b) { return (a.id < b.id); }
 bool byName(Product a, Product b) { return (a.name < b.name); }
@@ -38,14 +37,21 @@ void merge(vector<Product> &arr, vector<Product> &left, vector<Product> &right,
   }
 }
 
-void mergeSort(vector<Product> &arr, bool (*compare)(Product a, Product b)) {
+void mergeSort(vector<Product> &arr, bool (*compare)(Product, Product)) {
   int length = arr.size();
   if (length <= 1)
     return;
+
   int middle = length / 2;
 
-  vector<Product> left(arr.begin(), arr.begin() + middle);
-  vector<Product> right(arr.begin() + middle, arr.end());
+  vector<Product> left;
+  vector<Product> right;
+
+  for (int i = 0; i < middle; i++)
+    left.push_back(arr[i]);
+
+  for (int i = middle; i < length; i++)
+    right.push_back(arr[i]);
 
   mergeSort(left, compare);
   mergeSort(right, compare);

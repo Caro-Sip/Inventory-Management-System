@@ -5,7 +5,7 @@
 class HashTable {
 private:
   int tableSize;
-  SinglyLinkedList **table;
+  Element **table;
 
   int hash(int id) { return id % this->tableSize; }
 
@@ -14,18 +14,29 @@ public:
 
   ~HashTable() {
     for (int i = 0; i < this->tableSize; i++) {
-      delete this->table[i];
+      Element *node = this->table[i];
+      while (node != nullptr) {
+        Element *next = node->next;
+        delete node;
+        node = next;
+      }
     }
     delete[] this->table;
   }
 
-  void insert(Element2 *node) { this->table[hash(node->data.id)]->add(node); }
+  void insert(Element2 *node) {
+    int index = hash(node->data.id);
+    Element *newNode = new Element;
+    newNode->data = node;
+    newNode->next = this->table[index];
+    this->table[index] = newNode;
+  }
 
   void init(DoublyLinkedList &ls) {
     this->tableSize = ls.getSize();
-    this->table = new SinglyLinkedList *[this->tableSize];
+    this->table = new Element *[this->tableSize];
     for (int i = 0; i < this->tableSize; i++) {
-      this->table[i] = new SinglyLinkedList;
+      this->table[i] = nullptr;
     }
 
     Element2 *node = ls.getHead();
@@ -38,7 +49,7 @@ public:
   Element2 *search(int id) {
     if (id < 0 || id >= this->tableSize)
       return nullptr;
-    Element *node = this->table[hash(id)]->getHead();
+    Element *node = this->table[hash(id)];
     while (node != nullptr) {
       if (node->data->data.id == id) {
         return node->data;

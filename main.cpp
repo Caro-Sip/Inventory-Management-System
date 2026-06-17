@@ -74,16 +74,16 @@ private:
 
     switch (choice) {
     case 1:
-      mergeSort(vector_ls.getVector(), byId);
+      mergeSort(vector_ls, byId);
       break;
     case 2:
-      mergeSort(vector_ls.getVector(), byName);
+      mergeSort(vector_ls, byName);
       break;
     case 3:
-      mergeSort(vector_ls.getVector(), byPrice);
+      mergeSort(vector_ls, byPrice);
       break;
     case 4:
-      mergeSort(vector_ls.getVector(), byQuantity);
+      mergeSort(vector_ls, byQuantity);
       break;
     case 0:
       currentState = MenuState::Main;

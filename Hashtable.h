@@ -24,6 +24,21 @@ public:
     delete[] this->table;
   }
 
+  void clear() {
+    for (int i = 0; i < this->tableSize; i++) {
+      Element *node = this->table[i];
+      while (node != nullptr) {
+        Element *next = node->next;
+        delete node;
+        node = next;
+      }
+      this->table[i] = nullptr;
+    }
+    delete[] this->table;
+    this->table = nullptr;
+    this->tableSize = 0;
+  }
+
   void insert(Element2 *node) {
     int index = hash(node->data.id);
     Element *newNode = new Element;

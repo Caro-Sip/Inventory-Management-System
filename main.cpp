@@ -1,7 +1,23 @@
-#include "init.cpp"
+#include "Hashtable.h"
+#include "LinkedList.h"
+#include "file_io.cpp"
 #include "mergeSort.cpp"
-#include <iostream>
+#include "vector.h"
 #include <string>
+
+HashTable table;
+DoublyLinkedList *ls = new DoublyLinkedList;
+vector<Product> vector_ls;
+
+void reload() {
+  vector_ls.clear();
+  ls->clear();
+  table.clear();
+
+  loadFromCSV(*ls);
+  table.init(*ls);
+  vector_ls.load(*ls);
+}
 
 class IMS {
   enum class MenuState {
@@ -71,33 +87,98 @@ private:
     std::cout << "choice: ";
 
     std::cin >> choice;
+    std::cin.ignore();
 
     switch (choice) {
     case 1:
       mergeSort(vector_ls, byId);
+      vector_ls.display();
       break;
     case 2:
       mergeSort(vector_ls, byName);
+      vector_ls.display();
       break;
     case 3:
       mergeSort(vector_ls, byPrice);
+      vector_ls.display();
       break;
     case 4:
       mergeSort(vector_ls, byQuantity);
+      vector_ls.display();
       break;
     case 0:
       currentState = MenuState::Main;
       break;
     default:
-      std::cout << "READ!\n";
+      std::cout << "Invalid option.\n";
     }
-
-    vector_ls.display();
   }
 
-  void handleAddItem() { std::cout << "Unimplemented Method 2\n"; }
+  void handleAddItem() {
+    Product data;
+    std::cout << "\n=== Add Item ===\n";
+    std::cin.ignore();
+    std::cout << "name: ";
+    std::getline(std::cin, data.name);
+    std::cout << "price: ";
+    std::cin >> data.price;
+    std::cout << "quantity: ";
+    std::cin >> data.quantity;
+    std::cin.ignore();
 
-  void handleUpdateItem() { std::cout << "Unimplemented Method 3\n"; }
+    data.id = vector_ls.getAvailableId();
+    Element2 *node = ls->add(data);
+    vector_ls.push_back(data);
+    appendToCSV(data);
+    table.insert(node);
+
+    std::cout << "\n=== Item Added ===\n";
+    std::cout << std::left << std::setw(5) << data.id << std::setw(15)
+              << data.name << std::setw(10) << data.quantity << std::setw(10)
+              << data.price << "\n";
+  }
+
+  void handleUpdateItem() {
+    int id;
+    std::cout << "\n=== Update Item ===\n";
+    std::cout << "id: ";
+    std::cin >> id;
+    std::cin.ignore();
+
+    Element2 *node = table.search(id);
+
+    if (node) {
+      std::cout << "\n=== Found ===\n";
+      ls->display(*node);
+
+      std::cout << "name (" << node->data.name << "): ";
+      std::string name;
+      std::getline(std::cin, name);
+      if (!name.empty())
+        node->data.name = name;
+
+      std::cout << "price (" << node->data.price << "): ";
+      std::string price;
+      std::getline(std::cin, price);
+      if (!price.empty())
+        node->data.price = std::stod(price);
+
+      std::cout << "quantity (" << node->data.quantity << "): ";
+      std::string quantity;
+      std::getline(std::cin, quantity);
+      if (!quantity.empty())
+        node->data.quantity = std::stoi(quantity);
+
+      std::cout << "\n=== Item Updated ===\n";
+      ls->display(*node);
+
+      saveToCSV(*ls);
+      reload();
+
+    } else {
+      std::cout << "Item not found.\n";
+    }
+  }
 
   void handleRemoveItem() { std::cout << "Unimplemented Method 4\n"; }
 
@@ -105,8 +186,14 @@ private:
 };
 
 int main() {
-  init();
+  loadFromCSV(*ls);
+  table.init(*ls);
+  vector_ls.load(*ls);
+
   IMS ims;
   ims.start();
+
+  saveToCSV(*ls);
+  delete ls;
   return 0;
 }

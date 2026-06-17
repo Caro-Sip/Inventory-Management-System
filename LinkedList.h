@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Product.h"
+#include <iomanip>
 #include <iostream>
 
 struct Element2 {
@@ -22,6 +23,27 @@ private:
 
 public:
   DoublyLinkedList() {
+    head = nullptr;
+    tail = nullptr;
+    size = 0;
+  }
+
+  ~DoublyLinkedList() {
+    Element2 *curr = head;
+    while (curr != nullptr) {
+      Element2 *next = curr->next;
+      delete curr;
+      curr = next;
+    }
+  }
+
+  void clear() {
+    Element2 *curr = head;
+    while (curr != nullptr) {
+      Element2 *next = curr->next;
+      delete curr;
+      curr = next;
+    }
     head = nullptr;
     tail = nullptr;
     size = 0;
@@ -60,5 +82,11 @@ public:
 
   void remove(int id) {
     // need hashtable first
+  }
+
+  void display(Element2 &data) {
+    std::cout << std::left << std::setw(5) << data.data.id << std::setw(15)
+              << data.data.name << std::setw(10) << data.data.quantity
+              << std::setw(10) << data.data.price << "\n";
   }
 };

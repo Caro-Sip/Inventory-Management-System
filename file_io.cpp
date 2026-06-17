@@ -1,6 +1,7 @@
 #pragma once
 
 #include "LinkedList.h"
+#include "Product.h"
 #include <fstream>
 #include <sstream>
 
@@ -31,17 +32,21 @@ void loadFromCSV(DoublyLinkedList &ls) {
   file.close();
 }
 
+void appendToCSV(Product data) {
+  std::ofstream file("Product.csv", std::ios::app);
+  file << data.id << "," << data.name << "," << data.quantity << ","
+       << data.price << "\n";
+  file.close();
+}
+
 void saveToCSV(DoublyLinkedList &ls) {
   std::ofstream file("Product.csv", std::ios::trunc);
-
   file << "id,name,quantity,price\n";
+  file.close();
 
   Element2 *node = ls.getHead();
   while (node != nullptr) {
-    file << node->data.id << "," << node->data.name << ","
-         << node->data.quantity << "," << node->data.price << "\n";
+    appendToCSV(node->data);
     node = node->next;
   }
-
-  file.close();
 }

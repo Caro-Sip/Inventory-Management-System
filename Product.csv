@@ -1,7 +1,7 @@
 id,name,quantity,price
 0,Apple,53,35.86
 1,Banana,2,30.34
-2,Orange,13,29.06
+2,Orange,100,2
 3,Mango,172,37.77
 4,Grape,180,38.67
 5,Milk,196,11.81
@@ -24,7 +24,7 @@ id,name,quantity,price
 22,Toothpaste,53,12.71
 23,Tissue,185,13.43
 24,Detergent,39,20.85
-25,Notebook,36,37.0
+25,Notebook,36,37
 26,Pen,108,34.59
 27,Pencil,16,16.07
 28,Stapler,118,18.01

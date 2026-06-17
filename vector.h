@@ -31,6 +31,13 @@ public:
   }
   ~vector() { delete[] data; }
 
+  void clear() {
+    delete[] data;
+    data = new T[1];
+    capacity = 1;
+    used = 0;
+  }
+
   T &operator[](int index) { return data[index]; }
 
   void push_back(T data) {
@@ -63,5 +70,20 @@ public:
       this->push_back(node->data);
       node = node->next;
     }
+  }
+
+  int getAvailableId() {
+    for (int i = 0; i < used; i++) {
+      bool found = false;
+      for (int j = 0; j < used; j++) {
+        if (data[j].id == i) {
+          found = true;
+          break;
+        }
+      }
+      if (!found)
+        return i;
+    }
+    return used;
   }
 };

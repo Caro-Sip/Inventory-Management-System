@@ -24,6 +24,28 @@ public:
     delete[] this->table;
   }
 
+  void init(DoublyLinkedList &ls) {
+    this->tableSize = ls.getSize();
+    this->table = new Element *[this->tableSize];
+    for (int i = 0; i < this->tableSize; i++) {
+      this->table[i] = nullptr;
+    }
+
+    Element2 *node = ls.getHead();
+    while (node != nullptr) {
+      this->insert(node);
+      node = node->next;
+    }
+  }
+
+  void insert(Element2 *node) {
+    int index = hash(node->data.id);
+    Element *newNode = new Element;
+    newNode->data = node;
+    newNode->next = this->table[index];
+    this->table[index] = newNode;
+  }
+  
   void clear() {
     for (int i = 0; i < this->tableSize; i++) {
       Element *node = this->table[i];
@@ -39,31 +61,8 @@ public:
     this->tableSize = 0;
   }
 
-  void insert(Element2 *node) {
-    int index = hash(node->data.id);
-    Element *newNode = new Element;
-    newNode->data = node;
-    newNode->next = this->table[index];
-    this->table[index] = newNode;
-  }
-
-  void init(DoublyLinkedList &ls) {
-    this->tableSize = ls.getSize();
-    this->table = new Element *[this->tableSize];
-    for (int i = 0; i < this->tableSize; i++) {
-      this->table[i] = nullptr;
-    }
-
-    Element2 *node = ls.getHead();
-    while (node != nullptr) {
-      this->insert(node);
-      node = node->next;
-    }
-  }
-
   Element2 *search(int id) {
-    if (id < 0 || id >= this->tableSize)
-      return nullptr;
+    if (id < 0 || this->tableSize == 0 || this->table == nullptr) return nullptr;
     Element *node = this->table[hash(id)];
     while (node != nullptr) {
       if (node->data->data.id == id) {

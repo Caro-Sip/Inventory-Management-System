@@ -72,8 +72,9 @@ private:
     } else if (input == "5") {
       handleRestockItem();
     } 
-        else if(input == "6"){}
-
+      else if (input == "6") {
+      handleUndo();
+}
                 else if (input == "0") {
       currentState = MenuState::Exit;
     }
@@ -121,10 +122,9 @@ private:
     }
   }
 
-  void handleAddItem() {
+void handleAddItem() {
     Product data;
     std::cout << "\n=== Add Item ===\n";
-    std::cin.ignore();
     std::cout << "name: ";
     std::getline(std::cin, data.name);
     std::cout << "price: ";
@@ -139,11 +139,17 @@ private:
     appendToCSV(data);
     table.insert(node);
 
+
+    state s;
+    s.type = action::Add;
+    s.after = data;
+    stack.push(s);
+
     std::cout << "\n=== Item Added ===\n";
     std::cout << std::left << std::setw(5) << data.id << std::setw(15)
               << data.name << std::setw(10) << data.quantity << std::setw(10)
               << data.price << "\n";
-  }
+}
 
   void handleUpdateItem() {
     int id;
@@ -155,6 +161,10 @@ private:
     Element2 *node = table.search(id);
 
     if (node) {
+      state s;
+      s.type = action::Update;
+      s.before = node->data;
+
       std::cout << "\n=== Found ===\n";
       ls->display(*node);
 
@@ -179,6 +189,9 @@ private:
       std::cout << "\n=== Item Updated ===\n";
       ls->display(*node);
 
+      s.after = node->data;
+      stack.push(s);
+
       saveToCSV(*ls);
       reload();
 
@@ -186,7 +199,6 @@ private:
       std::cout << "Item not found.\n";
     }
   }
-
   void handleRemoveItem() { std::cout << "Unimplemented Method 4\n"; }
 
   void handleRestockItem() { std::cout << "Unimplemented Method 5\n"; }

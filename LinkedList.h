@@ -81,7 +81,25 @@ public:
   }
 
   void remove(int id) {
-    // need hashtable first
+    Element2 *curr = head;
+    while (curr != nullptr) {
+      if (curr->data.id == id) {
+        if (curr->prev != nullptr) {
+          curr->prev->next = curr->next;
+        } else {
+          head = curr->next;
+        }
+        if (curr->next != nullptr) {
+          curr->next->prev = curr->prev;
+        } else {
+          tail = curr->prev;
+        }
+        delete curr;
+        size--;
+        return;
+      }
+      curr = curr->next;
+    }
   }
 
   void display(Element2 &data) {

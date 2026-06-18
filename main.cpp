@@ -1,7 +1,7 @@
 #include "Hashtable.h"
 #include "LinkedList.h"
-#include "file_io.cpp"
-#include "mergeSort.cpp"
+#include "file_io.h"
+#include "mergeSort.h"
 #include "vector.h"
 #include <string>
 #include "Stack.h"
@@ -203,23 +203,28 @@ void handleAddItem() {
 
   void handleRestockItem() { std::cout << "Unimplemented Method 5\n"; }
 void handleUndo() {            
-     
-        if (stack.isEmpty()) {
-            std::cout << "Nothing to undo.\n";
-            return;
-        }
-        
-
-        state LastAction = stack.pop(); 
-
-        if (LastAction.type == action::Add) {
-            std::cout << "ADDED \"" << LastAction.after.name << "\"\n";
-        } else if (LastAction.type == action::Remove) {
-            std::cout << "REMOVED\"" << LastAction.before.name << "\"\n";
-        } else if (LastAction.type == action::Update) {
-            std::cout << "UPDATED \"" << LastAction.after.name << "\"\n";
-        }
+    if (stack.isEmpty()) {
+        std::cout << "Nothing to undo.\n";
+        return;
     }
+
+    state LastAction = stack.pop(); 
+
+    if (LastAction.type == action::Add) {
+        ls->remove(LastAction.after.id);
+        std::cout << "Undid add: \"" << LastAction.after.name << "\"\n";
+    } else if (LastAction.type == action::Update) {
+        Element2 *node = table.search(LastAction.before.id);
+        if (node) node->data = LastAction.before;
+        std::cout << "Undid update: \"" << LastAction.after.name << "\"\n";
+    } else if (LastAction.type == action::Remove) {
+        ls->add(LastAction.before);
+        std::cout << "Undid remove: \"" << LastAction.before.name << "\"\n";
+    }
+
+    saveToCSV(*ls);
+    reload();
+}
 };
 
 

@@ -1,5 +1,5 @@
-#pragma once
 
+#include "mergeSort.h"
 #include "Product.h"
 #include "vector.h"
 

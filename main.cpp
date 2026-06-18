@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include "Stack.h"
 
 class IMS {
     enum class MenuState {
@@ -9,7 +10,7 @@ class IMS {
     };
 
     MenuState currentState = MenuState::Main;
-
+    Stack stack; 
 public:
     void start() {
         while (currentState != MenuState::Exit) {
@@ -35,6 +36,7 @@ private:
         std::cout << "3. Update Item\n";
         std::cout << "4. Remove Item\n";
         std::cout << "5. Review Restock\n";
+        std::cout << "6. Undo\n";
         std::cout << "0. Quit\n";
         std::cout << "Enter option: ";
 
@@ -51,9 +53,13 @@ private:
             handleRemoveItem();
         } else if (input == "5") {
             handleRestockItem();
-        } else if (input == "0") {
+        } 
+        else if(input == "6"){}
+
+                else if (input == "0") {
             currentState = MenuState::Exit;
-        } else {
+        }
+        else {
             std::cout << "Invalid Option. Please try again.\n";
         }
     }
@@ -64,6 +70,7 @@ private:
         std::cout << "\nPress Enter to return to main menu...";
         std::string input;
         std::getline(std::cin, input);
+        
         currentState = MenuState::Main;
     }
 
@@ -86,7 +93,28 @@ private:
     void handleRestockItem() {
         std::cout << "Unimplemented Method 5\n";
     }
+void handleUndo() {            
+     
+        if (stack.isEmpty()) {
+            std::cout << "Nothing to undo.\n";
+            return;
+        }
+        
+
+        state LastAction = stack.pop(); 
+
+        if (LastAction.type == action::Add) {
+            std::cout << "ADDED \"" << LastAction.after.name << "\"\n";
+        } else if (LastAction.type == action::Remove) {
+            std::cout << "REMOVED\"" << LastAction.before.name << "\"\n";
+        } else if (LastAction.type == action::Update) {
+            std::cout << "UPDATED \"" << LastAction.after.name << "\"\n";
+        }
+    }
 };
+
+
+
 
 int main(){
     IMS ims;

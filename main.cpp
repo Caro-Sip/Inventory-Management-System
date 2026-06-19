@@ -1,10 +1,10 @@
 #include "Hashtable.h"
 #include "LinkedList.h"
-#include "file_io.h"
-#include "mergeSort.h"
+#include "Stack.cpp"
+#include "file_io.cpp"
+#include "mergeSort.cpp"
 #include "vector.h"
 #include <string>
-#include "Stack.h"
 
 HashTable table;
 DoublyLinkedList *ls = new DoublyLinkedList;
@@ -28,7 +28,8 @@ class IMS {
   };
 
   MenuState currentState = MenuState::Main;
-    Stack stack; 
+  Stack stack;
+
 public:
   void start() {
     while (currentState != MenuState::Exit) {
@@ -54,7 +55,7 @@ private:
     std::cout << "3. Update Item\n";
     std::cout << "4. Remove Item\n";
     std::cout << "5. Review Restock\n";
-        std::cout << "6. Undo\n";
+    std::cout << "6. Undo\n";
     std::cout << "0. Quit\n";
     std::cout << "Enter option: ";
 
@@ -71,14 +72,11 @@ private:
       handleRemoveItem();
     } else if (input == "5") {
       handleRestockItem();
-    } 
-      else if (input == "6") {
+    } else if (input == "6") {
       handleUndo();
-}
-                else if (input == "0") {
+    } else if (input == "0") {
       currentState = MenuState::Exit;
-    }
-        else {
+    } else {
       std::cout << "Invalid Option. Please try again.\n";
     }
   }
@@ -114,7 +112,7 @@ private:
       vector_ls.display();
       break;
     case 0:
-        
+
       currentState = MenuState::Main;
       break;
     default:
@@ -122,7 +120,7 @@ private:
     }
   }
 
-void handleAddItem() {
+  void handleAddItem() {
     Product data;
     std::cout << "\n=== Add Item ===\n";
     std::cout << "name: ";
@@ -139,7 +137,6 @@ void handleAddItem() {
     appendToCSV(data);
     table.insert(node);
 
-
     state s;
     s.type = action::Add;
     s.after = data;
@@ -149,7 +146,7 @@ void handleAddItem() {
     std::cout << std::left << std::setw(5) << data.id << std::setw(15)
               << data.name << std::setw(10) << data.quantity << std::setw(10)
               << data.price << "\n";
-}
+  }
 
   void handleUpdateItem() {
     int id;
@@ -202,33 +199,31 @@ void handleAddItem() {
   void handleRemoveItem() { std::cout << "Unimplemented Method 4\n"; }
 
   void handleRestockItem() { std::cout << "Unimplemented Method 5\n"; }
-void handleUndo() {            
+  void handleUndo() {
     if (stack.isEmpty()) {
-        std::cout << "Nothing to undo.\n";
-        return;
+      std::cout << "Nothing to undo.\n";
+      return;
     }
 
-    state LastAction = stack.pop(); 
+    state LastAction = stack.pop();
 
     if (LastAction.type == action::Add) {
-        ls->remove(LastAction.after.id);
-        std::cout << "Undid add: \"" << LastAction.after.name << "\"\n";
+      ls->remove(LastAction.after.id);
+      std::cout << "Undid add: \"" << LastAction.after.name << "\"\n";
     } else if (LastAction.type == action::Update) {
-        Element2 *node = table.search(LastAction.before.id);
-        if (node) node->data = LastAction.before;
-        std::cout << "Undid update: \"" << LastAction.after.name << "\"\n";
+      Element2 *node = table.search(LastAction.before.id);
+      if (node)
+        node->data = LastAction.before;
+      std::cout << "Undid update: \"" << LastAction.after.name << "\"\n";
     } else if (LastAction.type == action::Remove) {
-        ls->add(LastAction.before);
-        std::cout << "Undid remove: \"" << LastAction.before.name << "\"\n";
+      ls->add(LastAction.before);
+      std::cout << "Undid remove: \"" << LastAction.before.name << "\"\n";
     }
 
     saveToCSV(*ls);
     reload();
-}
+  }
 };
-
-
-
 
 int main() {
   loadFromCSV(*ls);

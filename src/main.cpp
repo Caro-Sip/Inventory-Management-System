@@ -1,9 +1,9 @@
-#include "Hashtable.h"
-#include "LinkedList.h"
-#include "Stack.h"
-#include "file_io.h"
-#include "mergeSort.h"
-#include "vector.h"
+#include "headers/Hashtable.h"
+#include "headers/LinkedList.h"
+#include "headers/Stack.h"
+#include "headers/file_io.h"
+#include "headers/mergeSort.h"
+#include "headers/vector.h"
 #include <string>
 
 HashTable table;

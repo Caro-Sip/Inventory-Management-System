@@ -1,8 +1,8 @@
 #include "Hashtable.h"
 #include "LinkedList.h"
-#include "Stack.cpp"
-#include "file_io.cpp"
-#include "mergeSort.cpp"
+#include "Stack.h"
+#include "file_io.h"
+#include "mergeSort.h"
 #include "vector.h"
 #include <string>
 

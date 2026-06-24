@@ -6,6 +6,7 @@
 #include "headers/queues.h"
 #include "headers/vector.h"
 #include <string>
+#include "headers/Tree.h"
 
 enum class MenuState {
   Main,
@@ -26,6 +27,7 @@ enum class MenuState {
   Restock_Id,
 
   Undo,
+  FilterByPrice,
 };
 
 HashTable table;
@@ -34,15 +36,18 @@ vector<Product> vector_ls;
 Stack<state> stack;
 Stack<MenuState> navStack;
 Restock restockQueue;
+Tree priceTree;
 
 void reload() {
   vector_ls.clear();
   ls->clear();
   table.clear();
+  priceTree.clear();
 
   loadFromCSV(*ls);
   table.init(*ls);
   vector_ls.load(*ls);
+  priceTree.load(ls);
 }
 
 class IMS {
@@ -82,6 +87,9 @@ public:
       case MenuState::Undo:
         handleUndo();
         break;
+      case MenuState::FilterByPrice:
+        handleFilterByPrice();
+        break;
       default:
         break;
       }
@@ -98,6 +106,7 @@ private:
     std::cout << "4. Remove Item\n";
     std::cout << "5. Review Restock\n";
     std::cout << "6. Undo\n";
+    std::cout << "7. Filter by Price Range\n";
     std::cout << "0. Quit\n";
     std::cout << "Enter option: ";
 
@@ -116,6 +125,8 @@ private:
       navStack.push(MenuState::Restock);
     else if (input == "6")
       navStack.push(MenuState::Undo);
+    else if (input == "7")
+      navStack.push(MenuState::FilterByPrice);
     else if (input == "0")
       navStack.pop();
     else
@@ -176,6 +187,7 @@ private:
     vector_ls.push_back(data);
     appendToCSV(data);
     table.insert(node);
+    priceTree.insert(&node->data);
 
     state s;
     s.type = action::Add;
@@ -438,12 +450,29 @@ private:
 
     navStack.pop();
   }
+
+  void handleFilterByPrice(){
+    double minPrice, maxPrice;
+    std::cout << "\n=== Filter by Price Range ===\n";
+    std::cout << "Enter minimum price: ";
+    std::cin >> minPrice;
+    std::cout << "Enter maximum price: ";
+    std::cin >> maxPrice;
+    std::cin.ignore(); 
+    if (minPrice > maxPrice) {
+        std::cout << "Error: Minimum price cannot be greater than maximum price.\n";
+    } else {
+        priceTree.rangeSearch(minPrice, maxPrice);
+    }
+    navStack.pop(); 
+  }
 };
 
 int main() {
   loadFromCSV(*ls);
   table.init(*ls);
   vector_ls.load(*ls);
+  priceTree.load(ls);
 
   IMS ims;
   ims.start();

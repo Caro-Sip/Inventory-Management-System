@@ -3,13 +3,37 @@
 #include "headers/Stack.h"
 #include "headers/file_io.h"
 #include "headers/mergeSort.h"
-#include "queues.h"
+#include "headers/queues.h"
 #include "headers/vector.h"
 #include <string>
+
+enum class MenuState {
+  Main,
+
+  ViewList,
+  ViewList_Id,
+  ViewList_Name,
+  ViewList_Price,
+  ViewList_Quantity,
+
+  AddItem,
+  UpdateItem,
+  RemoveItem,
+
+  Restock,
+  Restock_Display,
+  Restock_Auto,
+  Restock_Id,
+
+  Undo,
+};
 
 HashTable table;
 DoublyLinkedList *ls = new DoublyLinkedList;
 vector<Product> vector_ls;
+Stack<state> stack;
+Stack<MenuState> navStack;
+Restock restockQueue;
 
 void reload() {
   vector_ls.clear();
@@ -22,26 +46,43 @@ void reload() {
 }
 
 class IMS {
-  enum class MenuState {
-    Main,
-    ViewList,
-    Exit,
-  };
-
-  MenuState currentState = MenuState::Main;
-  Stack stack;
-
 public:
   void start() {
-    while (currentState != MenuState::Exit) {
-      switch (currentState) {
+    navStack.push(MenuState::Main);
+
+    while (!navStack.isEmpty()) {
+      switch (navStack.peek()) {
       case MenuState::Main:
         handleMainMenu();
         break;
       case MenuState::ViewList:
         handleViewListMenu();
         break;
-      case MenuState::Exit:
+      case MenuState::AddItem:
+        handleAddItem();
+        break;
+      case MenuState::UpdateItem:
+        handleUpdateItem();
+        break;
+      case MenuState::RemoveItem:
+        handleRemoveItem();
+        break;
+      case MenuState::Restock:
+        handleRestock();
+        break;
+      case MenuState::Restock_Display:
+        handleRestockDisplay();
+        break;
+      case MenuState::Restock_Auto:
+        handleRestockAuto();
+        break;
+      case MenuState::Restock_Id:
+        handleRestockById();
+        break;
+      case MenuState::Undo:
+        handleUndo();
+        break;
+      default:
         break;
       }
     }
@@ -49,7 +90,6 @@ public:
   }
 
 private:
-  Restock restockQueue;
   void handleMainMenu() {
     std::cout << "\n=== Inventory Management System ===\n";
     std::cout << "1. View List\n";
@@ -64,23 +104,22 @@ private:
     std::string input;
     std::getline(std::cin, input);
 
-    if (input == "1") {
-      currentState = MenuState::ViewList;
-    } else if (input == "2") {
-      handleAddItem();
-    } else if (input == "3") {
-      handleUpdateItem();
-    } else if (input == "4") {
-      handleRemoveItem();
-    } else if (input == "5") {
-      handleRestockItem();
-    } else if (input == "6") {
-      handleUndo();
-    } else if (input == "0") {
-      currentState = MenuState::Exit;
-    } else {
+    if (input == "1")
+      navStack.push(MenuState::ViewList);
+    else if (input == "2")
+      navStack.push(MenuState::AddItem);
+    else if (input == "3")
+      navStack.push(MenuState::UpdateItem);
+    else if (input == "4")
+      navStack.push(MenuState::RemoveItem);
+    else if (input == "5")
+      navStack.push(MenuState::Restock);
+    else if (input == "6")
+      navStack.push(MenuState::Undo);
+    else if (input == "0")
+      navStack.pop();
+    else
       std::cout << "Invalid Option. Please try again.\n";
-    }
   }
 
   void handleViewListMenu() {
@@ -114,8 +153,7 @@ private:
       vector_ls.display();
       break;
     case 0:
-
-      currentState = MenuState::Main;
+      navStack.pop();
       break;
     default:
       std::cout << "Invalid option.\n";
@@ -148,6 +186,8 @@ private:
     std::cout << std::left << std::setw(5) << data.id << std::setw(15)
               << data.name << std::setw(10) << data.quantity << std::setw(10)
               << data.price << "\n";
+
+    navStack.pop();
   }
 
   void handleUpdateItem() {
@@ -193,14 +233,19 @@ private:
 
       saveToCSV(*ls);
       reload();
-
     } else {
       std::cout << "Item not found.\n";
     }
-  }
-  void handleRemoveItem() { std::cout << "Unimplemented Method 4\n"; }
 
-  void handleRestockItem() {
+    navStack.pop();
+  }
+
+  void handleRemoveItem() {
+    std::cout << "Unimplemented Method 4\n";
+    navStack.pop();
+  }
+
+  void handleRestock() {
     std::cout << "\n=== Restock Management ===\n";
     std::cout << "1. Display Item\n";
     std::cout << "2. Auto Restock\n";
@@ -210,23 +255,21 @@ private:
 
     std::string choice;
     std::getline(std::cin, choice);
-    if (choice == "1") {
-      displayLowQuantity();
 
-    } else if (choice == "2") {
-      autoRestockoption();
-
-    } else if (choice == "3") {
-      restockById();
-
-    } else if (choice == "0") {
-      return;
-    } else {
+    if (choice == "1")
+      navStack.push(MenuState::Restock_Display);
+    else if (choice == "2")
+      navStack.push(MenuState::Restock_Auto);
+    else if (choice == "3")
+      navStack.push(MenuState::Restock_Id);
+    else if (choice == "0")
+      navStack.pop();
+    else
       std::cout << "Invalid option.\n";
-    }
   }
-  void displayLowQuantity() {
-    std::cout << "\n=== Option ===\n";
+
+  void handleRestockDisplay() {
+    std::cout << "\n=== Low Stock Items ===\n";
     mergeSort(vector_ls, byQuantity);
     vector_ls.display();
     std::cout << "\n--- Warning: ITEM needed to restock ---\n";
@@ -241,9 +284,11 @@ private:
         break;
       }
     }
+
+    navStack.pop();
   }
 
-  void autoRestockoption() {
+  void handleRestockAuto() {
     while (!restockQueue.isEmpty()) {
       restockQueue.dequeue();
     }
@@ -261,15 +306,16 @@ private:
 
     if (lowCount == 0) {
       std::cout << "All items are stocked.\n";
+      navStack.pop();
       return;
     }
 
-    std::cout << "\n Found " << lowCount;
+    std::cout << "\nFound " << lowCount << " low stock items.\n";
 
     while (!restockQueue.isEmpty()) {
       Product data = restockQueue.peek();
-      std::cout << "\nProcessing ID" << data.id << data.name << data.quantity
-                << std::endl;
+      std::cout << "\nProcessing ID" << data.id << " " << data.name
+                << " qty:" << data.quantity << std::endl;
       std::cout << "Enter new quantity (0 to skip, negative to stop queue): ";
 
       std::string input;
@@ -307,15 +353,18 @@ private:
         std::cout << "Successfully updated to " << newQuantity << "!\n";
       }
     }
+
+    navStack.pop();
   }
 
-  void restockById() {
-
+  void handleRestockById() {
     std::cout << "\nEnter Product ID to restock: ";
     std::string idInput;
     std::getline(std::cin, idInput);
-    if (idInput.empty())
+    if (idInput.empty()) {
+      navStack.pop();
       return;
+    }
     int targetId = std::stoi(idInput);
 
     Element2 *node = table.search(targetId);
@@ -323,17 +372,20 @@ private:
     if (node) {
       std::cout << "Found: " << node->data.name
                 << " | Current Qty: " << node->data.quantity << "\n";
-      std::cout << "Enter added stock amount (e.g., write '10' to add 10 "
-                   "more items): ";
+      std::cout << "Enter added stock amount (e.g., write '10' to add 10 more "
+                   "items): ";
 
       std::string qtyInput;
       std::getline(std::cin, qtyInput);
-      if (qtyInput.empty())
+      if (qtyInput.empty()) {
+        navStack.pop();
         return;
+      }
       int addedQty = std::stoi(qtyInput);
 
       if (addedQty <= 0) {
         std::cout << "Invalid quantity amount. Aborted.\n";
+        navStack.pop();
         return;
       }
 
@@ -355,11 +407,14 @@ private:
       std::cout << "Error: Product ID " << targetId
                 << " not found in system.\n";
     }
+
+    navStack.pop();
   }
 
   void handleUndo() {
     if (stack.isEmpty()) {
       std::cout << "Nothing to undo.\n";
+      navStack.pop();
       return;
     }
 
@@ -380,6 +435,8 @@ private:
 
     saveToCSV(*ls);
     reload();
+
+    navStack.pop();
   }
 };
 

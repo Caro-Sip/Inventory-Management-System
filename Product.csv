@@ -1,6 +1,6 @@
 id,name,quantity,price
 0,Apple,53,35.86
-1,Banana,2,30.34
+1,Banana,12,30.34
 2,Orange,100,2
 3,Mango,172,37.77
 4,Grape,180,38.67
@@ -29,4 +29,5 @@ id,name,quantity,price
 27,Pencil,16,16.07
 28,Stapler,118,18.01
 29,Scissors,72,27.99
-30,Laptop,1,14000
+30,Laptop,11,14000
+31,ughe,1,123

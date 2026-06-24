@@ -3,6 +3,7 @@
 #include "headers/Stack.h"
 #include "headers/file_io.h"
 #include "headers/mergeSort.h"
+#include "queues.h"
 #include "headers/vector.h"
 #include <string>
 
@@ -48,6 +49,7 @@ public:
   }
 
 private:
+  Restock restockQueue;
   void handleMainMenu() {
     std::cout << "\n=== Inventory Management System ===\n";
     std::cout << "1. View List\n";
@@ -198,7 +200,163 @@ private:
   }
   void handleRemoveItem() { std::cout << "Unimplemented Method 4\n"; }
 
-  void handleRestockItem() { std::cout << "Unimplemented Method 5\n"; }
+  void handleRestockItem() {
+    std::cout << "\n=== Restock Management ===\n";
+    std::cout << "1. Display Item\n";
+    std::cout << "2. Auto Restock\n";
+    std::cout << "3. Restock by ID\n";
+    std::cout << "0. Back\n";
+    std::cout << "Enter option: ";
+
+    std::string choice;
+    std::getline(std::cin, choice);
+    if (choice == "1") {
+      displayLowQuantity();
+
+    } else if (choice == "2") {
+      autoRestockoption();
+
+    } else if (choice == "3") {
+      restockById();
+
+    } else if (choice == "0") {
+      return;
+    } else {
+      std::cout << "Invalid option.\n";
+    }
+  }
+  void displayLowQuantity() {
+    std::cout << "\n=== Option ===\n";
+    mergeSort(vector_ls, byQuantity);
+    vector_ls.display();
+    std::cout << "\n--- Warning: ITEM needed to restock ---\n";
+    std::cout << std::left << std::setw(5) << "ID" << std::setw(15) << "Name"
+              << "Current Qty\n";
+    std::cout << "-------------------------------------------\n";
+    for (Product x : vector_ls) {
+      if (x.quantity < 5) {
+        std::cout << std::left << std::setw(5) << x.id << std::setw(15)
+                  << x.name << x.quantity << std::endl;
+      } else {
+        break;
+      }
+    }
+  }
+
+  void autoRestockoption() {
+    while (!restockQueue.isEmpty()) {
+      restockQueue.dequeue();
+    }
+
+    int lowCount = 0;
+    for (size_t i = 0; i < vector_ls.size(); i++) {
+      Product p = vector_ls[i];
+      if (p.quantity < 5) {
+        std::cout << std::left << std::setw(5) << p.id << std::setw(15)
+                  << p.name << p.quantity << " (LOW)\n";
+        restockQueue.enqueue(p);
+        lowCount++;
+      }
+    }
+
+    if (lowCount == 0) {
+      std::cout << "All items are stocked.\n";
+      return;
+    }
+
+    std::cout << "\n Found " << lowCount;
+
+    while (!restockQueue.isEmpty()) {
+      Product data = restockQueue.peek();
+      std::cout << "\nProcessing ID" << data.id << data.name << data.quantity
+                << std::endl;
+      std::cout << "Enter new quantity (0 to skip, negative to stop queue): ";
+
+      std::string input;
+      std::getline(std::cin, input);
+      if (input.empty())
+        continue;
+
+      int newQuantity = std::stoi(input);
+
+      if (newQuantity < 0) {
+        std::cout << "Queue processing halted.\n";
+        break;
+      }
+
+      restockQueue.dequeue();
+
+      if (newQuantity == 0) {
+        std::cout << "Skipped \"" << data.name << "\".\n";
+        continue;
+      }
+
+      Element2 *node = table.search(data.id);
+      if (node) {
+        state s;
+        s.type = action::Update;
+        s.before = node->data;
+
+        node->data.quantity = newQuantity;
+
+        s.after = node->data;
+        stack.push(s);
+
+        saveToCSV(*ls);
+        reload();
+        std::cout << "Successfully updated to " << newQuantity << "!\n";
+      }
+    }
+  }
+
+  void restockById() {
+
+    std::cout << "\nEnter Product ID to restock: ";
+    std::string idInput;
+    std::getline(std::cin, idInput);
+    if (idInput.empty())
+      return;
+    int targetId = std::stoi(idInput);
+
+    Element2 *node = table.search(targetId);
+
+    if (node) {
+      std::cout << "Found: " << node->data.name
+                << " | Current Qty: " << node->data.quantity << "\n";
+      std::cout << "Enter added stock amount (e.g., write '10' to add 10 "
+                   "more items): ";
+
+      std::string qtyInput;
+      std::getline(std::cin, qtyInput);
+      if (qtyInput.empty())
+        return;
+      int addedQty = std::stoi(qtyInput);
+
+      if (addedQty <= 0) {
+        std::cout << "Invalid quantity amount. Aborted.\n";
+        return;
+      }
+
+      state s;
+      s.type = action::Update;
+      s.before = node->data;
+
+      node->data.quantity += addedQty;
+
+      s.after = node->data;
+      stack.push(s);
+
+      saveToCSV(*ls);
+      reload();
+
+      std::cout << "\nUpdated \"" << node->data.name
+                << "\" total stock to: " << node->data.quantity << "\n";
+    } else {
+      std::cout << "Error: Product ID " << targetId
+                << " not found in system.\n";
+    }
+  }
+
   void handleUndo() {
     if (stack.isEmpty()) {
       std::cout << "Nothing to undo.\n";

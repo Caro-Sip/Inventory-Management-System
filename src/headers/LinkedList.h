@@ -54,7 +54,7 @@ public:
 
   int getMaxID() {
     int max = 0;
-    Element2 *node = head;
+    Element2 *node = head; 
     while (node != nullptr) {
       if (node->data.id > max)
         max = node->data.id;

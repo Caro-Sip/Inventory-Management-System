@@ -47,6 +47,8 @@ public:
   }
 
   int size() { return used; }
+  T* begin() { return data; }
+  T* end() { return data + used; }
 
   // custom display all
   void display() {

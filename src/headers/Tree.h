@@ -2,6 +2,7 @@
 
 #include <cstdio>
 #include "Product.h"
+#include "LinkedList.h"
 
 struct TreeNode{
     Product* data;

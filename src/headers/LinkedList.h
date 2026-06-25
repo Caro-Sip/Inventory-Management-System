@@ -52,17 +52,6 @@ public:
   Element2 *getHead() { return head; }
   int getSize() { return size; }
 
-  int getMaxID() {
-    int max = 0;
-    Element2 *node = head; 
-    while (node != nullptr) {
-      if (node->data.id > max)
-        max = node->data.id;
-      node = (Element2 *)node->next;
-    }
-    return max;
-  }
-
   Element2 *add(Product data) {
     Element2 *node = new Element2;
     node->data = data;

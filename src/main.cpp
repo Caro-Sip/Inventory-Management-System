@@ -25,6 +25,7 @@ enum class MenuState {
   Restock_Display,
   Restock_Auto,
   Restock_Id,
+  Order_Id,
 
   Undo,
   FilterByPrice,
@@ -84,6 +85,9 @@ public:
       case MenuState::Restock_Id:
         handleRestockById();
         break;
+      case MenuState::Order_Id:
+        handleOrderById();
+        break;
       case MenuState::Undo:
         handleUndo();
         break;
@@ -105,8 +109,9 @@ private:
     std::cout << "3. Update Item\n";
     std::cout << "4. Remove Item\n";
     std::cout << "5. Review Restock\n";
-    std::cout << "6. Undo\n";
-    std::cout << "7. Filter by Price Range\n";
+    std::cout << "6. Order Item\n";
+    std::cout << "7. Undo\n";
+    std::cout << "8. Filter by Price Range\n";
     std::cout << "0. Quit\n";
     std::cout << "Enter option: ";
 
@@ -124,8 +129,10 @@ private:
     else if (input == "5")
       navStack.push(MenuState::Restock);
     else if (input == "6")
-      navStack.push(MenuState::Undo);
+      navStack.push(MenuState::Order_Id);
     else if (input == "7")
+      navStack.push(MenuState::Undo);
+    else if (input == "8")
       navStack.push(MenuState::FilterByPrice);
     else if (input == "0")
       navStack.pop();
@@ -261,6 +268,7 @@ private:
 
     Element2 *node = table.search(id);
 
+    // node != nullptr == true
     if (node) {
       state s;
       s.type = action::Remove;
@@ -274,12 +282,13 @@ private:
       std::cout << "quantity (" << node->data.quantity << "): ";
 
       std::cout << "\n=== Item Deleted ===\n";
-      ls->remove(id);
       s.after = node->data;
+      ls->remove(id);
       stack.push(s);
       saveToCSV(*ls);
       reload();
     } else {
+      // node == nullptr == false
       std::cout << "Item not found.\n";
     }
     navStack.pop();
@@ -360,19 +369,21 @@ private:
 
       std::string input;
       std::getline(std::cin, input);
-      if (input.empty())
+      if (input.empty()) {
+        restockQueue.dequeue();
         continue;
+      }
 
-      int newQuantity = std::stoi(input);
+      int addedQuantity = std::stoi(input);
 
-      if (newQuantity < 0) {
+      if (addedQuantity < 0) {
         std::cout << "Queue processing halted.\n";
         break;
       }
 
       restockQueue.dequeue();
 
-      if (newQuantity == 0) {
+      if (addedQuantity == 0) {
         std::cout << "Skipped \"" << data.name << "\".\n";
         continue;
       }
@@ -383,14 +394,14 @@ private:
         s.type = action::Update;
         s.before = node->data;
 
-        node->data.quantity = newQuantity;
+        node->data.quantity += addedQuantity;
 
         s.after = node->data;
         stack.push(s);
 
         saveToCSV(*ls);
         reload();
-        std::cout << "Successfully updated to " << newQuantity << "!\n";
+        std::cout << "Successfully restocked by " << addedQuantity << "!\n";
       }
     }
 
@@ -438,11 +449,70 @@ private:
       s.after = node->data;
       stack.push(s);
 
+      std::string updatedName = node->data.name;
+      int updatedQuantity = node->data.quantity;
+
       saveToCSV(*ls);
       reload();
 
-      std::cout << "\nUpdated \"" << node->data.name
-                << "\" total stock to: " << node->data.quantity << "\n";
+      std::cout << "\nUpdated \"" << updatedName
+                << "\" total stock to: " << updatedQuantity << "\n";
+    } else {
+      std::cout << "Error: Product ID " << targetId
+                << " not found in system.\n";
+    }
+
+    navStack.pop();
+  }
+
+  void handleOrderById() {
+    std::cout << "\nEnter Product ID to order: ";
+    std::string idInput;
+    std::getline(std::cin, idInput);
+    if (idInput.empty()) {
+      navStack.pop();
+      return;
+    }
+    int targetId = std::stoi(idInput);
+
+    Element2 *node = table.search(targetId);
+
+    if (node) {
+      std::cout << "Found: " << node->data.name
+                << " | Current Qty: " << node->data.quantity << "\n";
+      std::cout << "Enter quantity to order: ";
+
+      std::string qtyInput;
+      std::getline(std::cin, qtyInput);
+      if (qtyInput.empty()) {
+        navStack.pop();
+        return;
+      }
+      int orderedQty = std::stoi(qtyInput);
+
+      if (orderedQty <= 0 || orderedQty > node->data.quantity) {
+        std::cout << "Invalid quantity amount. Aborted.\n";
+        navStack.pop();
+        return;
+      }
+
+      state s;
+      s.type = action::Update;
+      s.before = node->data;
+
+      node->data.quantity -= orderedQty;
+
+      s.after = node->data;
+      stack.push(s);
+
+      std::string updatedName = node->data.name;
+      int updatedQuantity = node->data.quantity;
+
+      saveToCSV(*ls);
+      reload();
+
+      std::cout << "\nUpdated \"" << updatedName
+                << "\" total stock to: " << updatedQuantity << "\n";
     } else {
       std::cout << "Error: Product ID " << targetId
                 << " not found in system.\n";

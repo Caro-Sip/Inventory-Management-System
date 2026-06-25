@@ -241,7 +241,35 @@ private:
   }
 
   void handleRemoveItem() {
-    std::cout << "Unimplemented Method 4\n";
+     int id;
+    std::cout << "\n=== Delete Item ===\n";
+    std::cout << "id: ";
+    std::cin >> id;
+    std::cin.ignore();
+
+    Element2 *node = table.search(id);
+
+    if (node) {
+      state s;
+      s.type = action::Remove;
+      s.before = node->data;
+
+      std::cout << "\n=== Found ===\n";
+      ls->display(*node);
+
+      std::cout << "name (" << node->data.name << "): ";
+      std::cout << "price (" << node->data.price << "): ";
+      std::cout << "quantity (" << node->data.quantity << "): ";
+
+      std::cout << "\n=== Item Deleted ===\n";
+      ls->remove(id);
+      s.after = node->data;
+      stack.push(s);
+      saveToCSV(*ls);
+      reload();
+    } else {
+      std::cout << "Item not found.\n";
+    }
     navStack.pop();
   }
 

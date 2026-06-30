@@ -4,6 +4,6 @@ A data strucutre and algorithm project attempting to implement data structure fo
 ## How to run
 
 ```bash
-g++ **/*.cpp -o inventory.exe
+g++ src/main.cpp -o inventory.exe
 ./inventory.exe
 ```

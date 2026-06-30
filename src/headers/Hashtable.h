@@ -11,7 +11,7 @@ private:
   int hash(int id) { return id % this->tableSize; }
 
 public:
-  //
+  // default constructor
   HashTable() : tableSize(0), table(nullptr) {}
 
   ~HashTable() {
@@ -26,6 +26,7 @@ public:
     delete[] this->table;
   }
 
+  // initialize the array indices
   void init(DoublyLinkedList &ls) {
     this->tableSize = ls.getSize();
     this->table = new Element *[this->tableSize];
@@ -40,6 +41,7 @@ public:
     }
   }
 
+  // simple singly linked list prepending to head
   void insert(Element2 *node) {
     int index = hash(node->data.id);
     Element *newNode = new Element;
@@ -48,6 +50,7 @@ public:
     this->table[index] = newNode;
   }
   
+  // clean method
   void clear() {
     for (int i = 0; i < this->tableSize; i++) {
       Element *node = this->table[i];
@@ -63,6 +66,7 @@ public:
     this->tableSize = 0;
   }
 
+  // direct random access
   Element2* search(int id) {
     if (id < 0 || this->tableSize == 0 || this->table == nullptr) return nullptr;
     Element *node = this->table[hash(id)];

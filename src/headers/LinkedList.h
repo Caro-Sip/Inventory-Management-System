@@ -69,28 +69,22 @@ public:
     return node;
   }
 
-  void remove(int id) {
-    Element2 *curr = head;
-    while (curr != nullptr) {
-      if (curr->data.id == id) {
-        if (curr->prev != nullptr) {
-          curr->prev->next = curr->next;
-        } else {
-          head = curr->next;
-        }
-        if (curr->next != nullptr) {
-          curr->next->prev = curr->prev;
-        } else {
-          tail = curr->prev;
-        }
-        delete curr;
-        size--;
-        return;
-      }
-      curr = curr->next;
+  void remove(Element2 *node) {
+    Element2 *curr = node;
+    if (curr->prev != nullptr) {
+      curr->prev->next = curr->next;
+    } else {
+      head = curr->next;
     }
+    if (curr->next != nullptr) {
+      curr->next->prev = curr->prev;
+    } else {
+      tail = curr->prev;
+    }
+    delete curr;
+    size--;
+    return;
   }
-
 
   void display(Element2 &data) {
     std::cout << std::left << std::setw(5) << data.data.id << std::setw(15)

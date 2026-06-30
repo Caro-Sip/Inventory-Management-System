@@ -283,7 +283,7 @@ private:
 
       std::cout << "\n=== Item Deleted ===\n";
       s.after = node->data;
-      ls->remove(id);
+      ls->remove(table.search(id));
       stack.push(s);
       saveToCSV(*ls);
       reload();
@@ -531,7 +531,7 @@ private:
     state LastAction = stack.pop();
 
     if (LastAction.type == action::Add) {
-      ls->remove(LastAction.after.id);
+      ls->remove(table.search(LastAction.after.id));
       std::cout << "Undid add: \"" << LastAction.after.name << "\"\n";
     } else if (LastAction.type == action::Update) {
       Element2 *node = table.search(LastAction.before.id);
